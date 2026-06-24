@@ -1,0 +1,5 @@
+chunk_size: 1024
+overlap_size: 128
+embedding_model: text-embedding-3-small
+embedding_batch_size: 100
+flush_every_batches: 10

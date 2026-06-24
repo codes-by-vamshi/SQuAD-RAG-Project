@@ -1,0 +1,6 @@
+*.pyc
+.env
+/data/documents/
+/data/qa/
+/data/splits/
+/embeddings/
