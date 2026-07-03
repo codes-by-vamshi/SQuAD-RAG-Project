@@ -212,6 +212,58 @@ Outputs:
 - `results/index_eval/combined_summary.csv`
 - `results/index_eval/report.md`
 
+## Step 7: Evaluate Generation Quality
+
+Run Step 7 to evaluate generation quality using multi-seed sampling.
+
+Method:
+- Sample 100 QA pairs per seed.
+- Use 6 fixed seeds for reproducibility.
+- Retrieve top-k context chunks from one selected FAISS index.
+- Generate answers with an OpenAI model.
+- Compute `EM`, `F1`, `ROUGE-L`, and `BLEU`.
+- Report per-seed and combined (mean/std across seeds) summaries.
+
+Default config:
+- `configs/baseline.yaml`
+  - `generation_model`
+  - `generation_temperature`
+  - `generation_max_tokens`
+  - `generation_eval_sample_size`
+  - `generation_eval_seeds`
+  - `generation_eval_retrieval_top_k`
+  - `generation_eval_context_max_chars`
+  - `generation_eval_index`
+  - `generation_eval_output_dir`
+  - `embedding_model`
+  - `embedding_batch_size`
+  - `ivf_nprobe`
+  - `hnsw_ef_search`
+  - `flat_l2_index_filename`
+  - `ivf_flat_index_filename`
+  - `hnsw_index_filename`
+
+Run:
+
+```bash
+python3 Step7_Evaluate_Generation.py
+```
+
+Example with custom seeds:
+
+```bash
+python3 Step7_Evaluate_Generation.py --seeds 101,202,303,404,505,606
+```
+
+Outputs:
+- `results/generation_eval/sampled_queries_by_seed.json`
+- `results/generation_eval/query_results.jsonl`
+- `results/generation_eval/per_seed_summary.json`
+- `results/generation_eval/per_seed_summary.csv`
+- `results/generation_eval/combined_summary.json`
+- `results/generation_eval/combined_summary.csv`
+- `results/generation_eval/report.md`
+
 ## Latest Results (Step 6)
 
 Source:
@@ -258,3 +310,42 @@ Observations:
 - `flat_l2` is exact and stable (`Recall@5 = 1.0000`) but slowest.
 - `hnsw` gives the best speed/quality tradeoff here (`Recall@5 ~ 0.98`, lowest latency).
 - `ivf_flat` is faster than `flat_l2` but lower recall than `hnsw` with current settings.
+
+## Latest Results (Step 7)
+
+Source:
+- `results/generation_eval/report.md`
+- `results/generation_eval/combined_summary.csv`
+
+Experiment setup:
+- Sample size per seed: `100`
+- Seeds: `11, 22, 33, 44, 55, 66`
+- Retrieval index: `hnsw`
+- Retrieval top-k context: `5`
+- Generation model: `gpt-4o-mini`
+
+### Combined Across 6 Seeds
+
+| metric | mean | std |
+|---|---:|---:|
+| EM | 0.0300 | 0.0115 |
+| F1 | 0.2928 | 0.0257 |
+| ROUGE-L | 0.2918 | 0.0262 |
+| BLEU | 0.2432 | 0.0196 |
+| Avg Gen Latency (ms) | 1177.6386 | 195.4426 |
+
+### Per-Seed Results
+
+| seed | EM | F1 | ROUGE-L | BLEU | avg_gen_ms | p50_gen_ms | p95_gen_ms | p99_gen_ms |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 11 | 0.0400 | 0.3228 | 0.3214 | 0.2534 | 1350.2246 | 1164.6574 | 2427.0542 | 3179.3223 |
+| 22 | 0.0300 | 0.2862 | 0.2862 | 0.2297 | 1528.8877 | 1126.9831 | 2050.2352 | 7296.4629 |
+| 33 | 0.0200 | 0.2526 | 0.2511 | 0.2361 | 1066.7799 | 938.8806 | 1626.1327 | 2067.3958 |
+| 44 | 0.0200 | 0.2964 | 0.2964 | 0.2292 | 1095.5030 | 933.7715 | 1669.8868 | 2898.4178 |
+| 55 | 0.0500 | 0.3248 | 0.3248 | 0.2826 | 1045.8423 | 921.4463 | 1649.4024 | 2574.5622 |
+| 66 | 0.0200 | 0.2739 | 0.2706 | 0.2280 | 978.5940 | 927.9790 | 1410.6441 | 1618.3362 |
+
+Observations:
+- With current prompt/model settings, lexical-overlap quality is moderate (`F1/ROUGE-L ~ 0.29`).
+- `BLEU` is lower and more variable, which is expected for short-form QA answers.
+- Generation latency is mostly around `~1.0s` to `~1.5s` average per seed, with occasional long-tail spikes in `p99`.

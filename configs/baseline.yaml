@@ -19,3 +19,12 @@ index_eval_sample_size: 100
 index_eval_top_k: 5
 index_eval_seeds: [11, 22, 33, 44, 55, 66]
 index_eval_output_dir: results/index_eval
+generation_model: gpt-4o-mini
+generation_temperature: 0.0
+generation_max_tokens: 80
+generation_eval_sample_size: 100
+generation_eval_seeds: [11, 22, 33, 44, 55, 66]
+generation_eval_retrieval_top_k: 5
+generation_eval_context_max_chars: 4000
+generation_eval_index: hnsw
+generation_eval_output_dir: results/generation_eval
