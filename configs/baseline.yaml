@@ -12,3 +12,10 @@ hnsw_ef_search: 32
 flat_l2_index_filename: flat_l2.index
 ivf_flat_index_filename: ivf_flat.index
 hnsw_index_filename: hnsw.index
+retrieval_top_k: 5
+retrieval_preview_chars: 220
+retrieval_seed: 42
+index_eval_sample_size: 100
+index_eval_top_k: 5
+index_eval_seeds: [11, 22, 33, 44, 55, 66]
+index_eval_output_dir: results/index_eval
