@@ -75,3 +75,31 @@ Optional output flush control:
 ```bash
 python3 Step3_Create_Embeddings.py --overwrite --flush-every-batches 5
 ```
+
+## Step 4: Create Indexes
+
+Run Step 4 to build FAISS indexes from embedding vectors.
+
+Default config:
+- `configs/baseline.yaml`
+  - `ivf_nlist_divisor`
+  - `ivf_nlist_min`
+  - `ivf_nprobe`
+  - `hnsw_m`
+  - `hnsw_ef_construction`
+  - `hnsw_ef_search`
+  - `flat_l2_index_filename`
+  - `ivf_flat_index_filename`
+  - `hnsw_index_filename`
+
+It reads:
+- `embeddings/embeddings.jsonl`
+
+It writes:
+- `indexes/*.index`
+
+Run:
+
+```bash
+python3 Step4_Create_Indexes.py --overwrite
+```

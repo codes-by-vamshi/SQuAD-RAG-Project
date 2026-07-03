@@ -3,3 +3,12 @@ overlap_size: 128
 embedding_model: text-embedding-3-small
 embedding_batch_size: 100
 flush_every_batches: 10
+ivf_nlist_divisor: 39
+ivf_nlist_min: 1
+ivf_nprobe: 32
+hnsw_m: 16
+hnsw_ef_construction: 100
+hnsw_ef_search: 32
+flat_l2_index_filename: flat_l2.index
+ivf_flat_index_filename: ivf_flat.index
+hnsw_index_filename: hnsw.index
